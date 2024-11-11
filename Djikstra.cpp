@@ -2,7 +2,7 @@
 #include <limits.h>
 using namespace std;
 // Number of vertices in the graph
-#define V 9
+#define V 50
 // Infinite weight for taken parking spaces
 #define Inf MAX_INT
 // A utility function to find the vertex with minimum
@@ -84,7 +84,7 @@ void dijkstra(int graph[V][V], int src)
 int main()
 {
 
-    /* Let us create the example graph discussed above */
+    /* Graph */
     int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
                         { 4, 0, 8, 0, 0, 0, 0, 11, 0 },
                         { 0, 8, 0, 7, 0, 4, 0, 0, 2 },
