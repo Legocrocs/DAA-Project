@@ -4,7 +4,7 @@ using namespace std;
 // Number of vertices in the graph
 #define V 50
 // Infinite weight for taken parking spaces
-#define Inf MAX_INT
+#define Inf INT_MAX
 // A utility function to find the vertex with minimum
 // distance value, from the set of vertices not yet included
 // in shortest path tree
