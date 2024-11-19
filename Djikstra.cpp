@@ -149,6 +149,5 @@ int main(){
 }
 
 //to do:
-//  - fix node labelling
 //  - fix timer
 //  - make the code repeatable
