@@ -27,29 +27,22 @@ void printSolution(int dist[], const vector<int>& parkingSpaces){
     for (int i : parkingSpaces){
         distances.push_back({dist[i], i});
     }
-
-    // Sort distances to find the optimal space
     sort(distances.begin(), distances.end());
 
-    // Display the optimal parking space
     int optimalSpace = distances[0].second;
     cout << "\nOptimal parking space is " << (optimalSpace + 1) << " with the distance of " << distances[0].first << endl;
 }
 
-//Djikstra
 void dijkstra(int graph[V][V], int src, int dist[], const vector<int>& parkingSpaces) {
-    bool sptSet[V]; // sptSet[i] will be true if vertex i is included in the shortest path tree
+    bool sptSet[V]; 
 
-    // Initialize all distances as INFINITE and sptSet[] as false
     for (int i = 0; i < V; i++) {
         dist[i] = INT_MAX;
         sptSet[i] = false;
     }
 
-    // Distance of source vertex from itself is always 0
     dist[src] = 0;
 
-    // Find shortest path for all vertices
     for (int count = 0; count < V - 1; count++) {
         int u = minDistance(dist, sptSet);
 
@@ -64,15 +57,10 @@ void dijkstra(int graph[V][V], int src, int dist[], const vector<int>& parkingSp
         }
     }
 
-    // Print distances for parking spaces
     printSolution(dist, parkingSpaces);
 }
 
-
-// driver's code
 int main(){
-
-    /* Let us create the example graph discussed above */
     int graph[V][V] = {
                         { 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                         { 5, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -198,7 +186,3 @@ int main(){
 
     return 0;
 }
-
-//to do:
-//  - fix timer
-//  - make the code repeatable
