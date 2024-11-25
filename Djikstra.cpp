@@ -24,8 +24,7 @@ void printSolution(int dist[], const vector<int>& parkingSpaces){
     cout << "Available space \t Distance from Entrance\n";
     vector<pair<int, int>> distances;
 
-    for (int i : parkingSpaces) {
-        cout << i+1 << " \t\t\t\t" << dist[i] << endl;
+    for (int i : parkingSpaces){
         distances.push_back({dist[i], i});
     }
 
@@ -34,17 +33,15 @@ void printSolution(int dist[], const vector<int>& parkingSpaces){
 
     // Display the optimal parking space
     int optimalSpace = distances[0].second;
-    cout << "Optimal parking space is " << (optimalSpace + 1)
-         << " with the distance of " << distances[0].first << endl;
+    cout << "\nOptimal parking space is " << (optimalSpace + 1) << " with the distance of " << distances[0].first << endl;
 }
 
 //Djikstra
-void dijkstra(int graph[V][V], int src, const vector<int>& parkingSpaces){
-    int dist[V];
+void dijkstra(int graph[V][V], int src, int dist[], const vector<int>& parkingSpaces) {
     bool sptSet[V]; // sptSet[i] will be true if vertex i is included in the shortest path tree
 
     // Initialize all distances as INFINITE and sptSet[] as false
-    for (int i = 0; i < V; i++){
+    for (int i = 0; i < V; i++) {
         dist[i] = INT_MAX;
         sptSet[i] = false;
     }
@@ -53,7 +50,7 @@ void dijkstra(int graph[V][V], int src, const vector<int>& parkingSpaces){
     dist[src] = 0;
 
     // Find shortest path for all vertices
-    for (int count = 0; count < V - 1; count++){
+    for (int count = 0; count < V - 1; count++) {
         int u = minDistance(dist, sptSet);
 
         // Mark the picked vertex as processed
@@ -61,7 +58,7 @@ void dijkstra(int graph[V][V], int src, const vector<int>& parkingSpaces){
 
         // Update dist value of the adjacent vertices of the picked vertex
         for (int v = 0; v < V; v++) {
-            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]){
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) {
                 dist[v] = dist[u] + graph[u][v];
             }
         }
@@ -70,6 +67,7 @@ void dijkstra(int graph[V][V], int src, const vector<int>& parkingSpaces){
     // Print distances for parking spaces
     printSolution(dist, parkingSpaces);
 }
+
 
 // driver's code
 int main(){
@@ -137,8 +135,60 @@ int main(){
         if (connections == 1) parkingSpaces.push_back(i);
     }
 
+    while (true) {
+        cout << "\nParking Simulation\n";
+        cout << "1. Add a car\n";
+        cout << "2. Remove a car\n";
+        cout << "3. Exit simulation\n";
+        cout << "Choose an option: ";
+        int choice;
+        cin >> choice;
+
+        vector<int> availableSpaces = parkingSpaces; // Start with all spaces available
+        int entrance = 0; // Source node for Dijkstra
+
+        if (choice == 1) { // Add a car
+            if (availableSpaces.empty()) {
+                cout << "No available parking spaces.\n";
+            } else {
+                int dist[V];
+                dijkstra(graph, entrance, dist, availableSpaces);
+
+
+                sort(availableSpaces.begin(), availableSpaces.end(), [&dist](int a, int b) {
+                    return dist[a] < dist[b];
+                });
+
+                int selectedSpace = availableSpaces.front();
+                availableSpaces.erase(availableSpaces.begin());
+
+                cout << "Car parked at space: " << selectedSpace << " (Distance: " << dist[selectedSpace] << ")\n";
+            }
+        } else if (choice == 2) { // Remove a car
+            cout << "Enter the parking space number to free up: ";
+            int space;
+            cin >> space;
+
+            if (find(parkingSpaces.begin(), parkingSpaces.end(), space) == parkingSpaces.end()) {
+                cout << "Invalid parking space.\n";
+            } else if (find(availableSpaces.begin(), availableSpaces.end(), space) != availableSpaces.end()) {
+                cout << "Parking space already available.\n";
+            } else {
+                availableSpaces.push_back(space);
+                cout << "Parking space " << space << " is now available.\n";
+            }
+        } else if (choice == 3) { // Exit simulation
+            cout << "Exiting simulation.\n";
+            break;
+        } else {
+            cout << "Invalid choice. Please try again.\n";
+        }
+    }
+    // Distance array
+    int dist[V];
+
     // Function call
-    dijkstra(graph, 0, parkingSpaces);
+    dijkstra(graph, 0, dist, parkingSpaces);
 
     auto end = chrono::high_resolution_clock::now();
 
