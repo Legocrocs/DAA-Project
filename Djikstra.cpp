@@ -127,7 +127,6 @@ int main(){
                     };
     int originalWeights[V][V];
     memcpy(originalWeights, graph, sizeof(graph));
-
     vector<int> parkingSpaces;
     for(int i = 0; i < V; i++){
         int connections = 0;
@@ -136,7 +135,7 @@ int main(){
     }
 
     vector<int> availableSpaces = parkingSpaces;
-
+    long long unsigned int spaceCounter = 0;
     while(true){
         cout << "\nParking Simulation\n";
         cout << "1. Add a car\n";
@@ -148,8 +147,8 @@ int main(){
         cin >> choice;
 
         if(choice == 1){
-            if (availableSpaces.empty()) {
-                cout << "No available parking spaces.\n";
+            if (spaceCounter == parkingSpaces.size()){
+                cout << "\nNo more available parking space.\n";
             }
             else{
                 int dist[V], parent[V];
@@ -180,28 +179,34 @@ int main(){
                 cout << "Shortest route: ";
                 printRoute(parent, selectedSpace);
                 cout << endl;
+                spaceCounter++;
+                if(spaceCounter == parkingSpaces.size()) cout<<"\nNo more available parking space.\n";
             }
         }
-        else if(choice == 2){
-            cout << "Enter the parking space number to free up: ";
-            int space;
-            cin >> space;
-            space--;
+        else if (choice == 2) {
+    cout << "Enter the parking space number to free up: ";
+    int space;
+    cin >> space;
+    space--;
 
-            // Validate the parking space
-            if (find(parkingSpaces.begin(), parkingSpaces.end(), space) == parkingSpaces.end()) cout << "Invalid parking space.\n";
-            else if(find(availableSpaces.begin(), availableSpaces.end(), space) != availableSpaces.end()) cout << "Parking space already available.\n";
-            else{
-            // Add the space back to availableSpaces
-            availableSpaces.push_back(space);
+    // Validate the parking space
+    if (find(parkingSpaces.begin(), parkingSpaces.end(), space) == parkingSpaces.end()){
+        cout << "Invalid parking space.\n";
+    }
+    else if(find(availableSpaces.begin(), availableSpaces.end(), space) != availableSpaces.end()){
+        cout << "Parking space already available.\n";
+    }
+    else{
+        // Add the space back to availableSpaces
+        availableSpaces.push_back(space);
 
-                // Restore the original weights in the graph matrix
-                for (int i = 0; i < V; i++) {
-                    if (originalWeights[i][space] > 0) {
-                        graph[i][space] = originalWeights[i][space];
-                        graph[space][i] = originalWeights[i][space];
-                    }  
-                }
+        // Restore the original weights in the graph matrix
+        for (int i = 0; i < V; i++){
+            if (originalWeights[i][space] > 0){
+                graph[i][space] = originalWeights[i][space];
+                graph[space][i] = originalWeights[i][space];
+            }
+        }
 
         // Sort availableSpaces to maintain closest-first order
         sort(availableSpaces.begin(), availableSpaces.end());
@@ -209,13 +214,15 @@ int main(){
         // Output the restoration route and status
         int dist[V], parent[V];
         dijkstra(graph, space, dist, parent, {0}); // Calculate route back to entrance
+
         cout << "Route back to entrance: ";
         printRoute(parent, 0);
         cout << endl;
 
         cout << "Parking space " << space + 1 << " is now available.\n";
+        spaceCounter--;
     }
-        }
+}
         else if(choice == 3){
             cout << "Parking lot status:\n";
             for(int space : parkingSpaces){
